@@ -1,0 +1,21 @@
+#!/home/ernst/miniconda3/bin/python
+
+import subprocess
+
+command = "git diff-index --cached --name-only HEAD"
+subprocess_response = subprocess.run(
+    command,
+    shell=True,
+    stdout=subprocess.PIPE,
+    text=True
+)
+changed_files = subprocess_response.stdout.split()
+changed_python_files = [file for file in changed_files if file.rsplit(".")[-1] == "py"]
+print(changed_python_files)
+
+black_command = f"black {' '.join(changed_python_files)}"
+subprocess.run(
+    black_command,
+    shell=True,
+    stdout=subprocess.PIPE
+)
